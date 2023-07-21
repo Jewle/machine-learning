@@ -4,6 +4,7 @@ from tensorflow.keras.datasets import imdb
 import numpy as np
 from tensorflow import keras
 from tensorflow.keras import layers
+import matplotlib.pyplot as plt
 
 def vectorize_sequences(sequences, dimension=10000):
     results = np.zeros((len(sequences), dimension))
@@ -34,12 +35,22 @@ partial_x_train = x_train[10000:]
 y_val = y_train[:10000]
 partial_y_train = y_train[10000:]
 
-print(x_val.shape)
-print('----')
-print(x_train.shape)
-# history = model.fit(
-#     partial_x_train,
-#     partial_y_train,
-#     epochs=20,
-#     batch_size=512,
-#     validation_data=(x_val, y_val))
+
+history = model.fit(
+    partial_x_train,
+    partial_y_train,
+    epochs=5,
+    batch_size=512,
+    validation_data=(x_val, y_val))
+
+history_dict = history.history
+loss_values = history_dict["loss"]
+val_loss_values = history_dict["val_loss"]
+epochs = range(1, len(loss_values) + 1)
+plt.plot(epochs, loss_values, "bo", label="Потери на этапе обучения")
+plt.plot(epochs, val_loss_values, "b", label="Потери на этапе проверки")
+plt.title("Потери на этапах обучения и проверки")
+plt.xlabel("Эпохи")
+plt.ylabel("Потери")
+plt.legend()
+plt.show()
